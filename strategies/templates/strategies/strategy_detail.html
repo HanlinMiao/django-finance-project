@@ -1,0 +1,21 @@
+{% extends "strategies/base.html" %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h5>Strategy Name</h5>
+            <div class="project-info-box mt-0">
+                <p class="mb-0">{{strategy.name}}</p>
+            </div>
+            <h5>Description</h5>
+            <div class="project-info-box">
+                <p class="mb-0">{{strategy.description}}</p>
+            </div>
+            <h5>Script</h5>
+            <div>
+                <pre><code class="python">{{strategy.get_script_lines}}</code></pre>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,37 @@
+{% extends "strategies/base.html" %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h5>Trade Ticker File</h5>
+            <div class="project-info-box mt-0">
+                <p class="mb-0">{{trade.tickers}}</p>
+            </div>
+            <h5>Portfolio Size</h5>
+            <div class="project-info-box">
+                <p class="mb-0">$ {{trade.portfolio_size}}</p>
+            </div>
+            <h5>Strategy Selected</h5>
+            <div class="project-info-box">
+                <p class="mb-0">{{trade.trading_strategy.name}}</p>
+            </div>
+            <table class="pull-right">
+                {% if user.is_authenticated %}
+                <tr><td>
+                    <a href="{% url 'execute-script' trade.id %}" class="btn btn-outline-success pull-right">Run Script</a>
+                </td></tr>
+                <tr><td>
+                    <a href="{% url 'get-trade' trade.id %}" class="btn btn-outline-success pull-right" download="recommended_trades.xlsx" target="_blank">Get Recommended Trade(.xlsx)</a>
+                </td></tr>
+                <tr><td>
+                    <a href="{% url 'index' %}" class="btn btn-outline-info pull-right">Edit Trade</a>
+                </td></tr>
+                <tr><td>
+                    <a href="{% url 'index' %}" class="btn btn-outline-danger pull-right">Delete Trade</a>
+                </td></tr>
+                {% endif %}
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock content %}
