@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.shortcuts import render, redirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django import forms
 from django.views.generic import (
     ListView,
@@ -33,20 +33,16 @@ class StrategyCreateView(CreateView):
         context = super(StrategyCreateView, self).get_context_data(**kwargs)
         context["strategies"] = get_all_strategies()
         return context
-    
-# def strategy_create(request):
-#     print(request.method)
-#     if request.method == 'POST':
-#         form = StrategyCreateForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('strategy-list')
-#     else:
-#         form = StrategyCreateForm()
-#     return render(request, 'strategies/strategy_form.html', {
-#         'form': form
-#     })
 
+class StrategyEditView(UpdateView):
+    model = Strategy
+    form_class = StrategyCreateForm
+    template_name = "strategies/strategy_edit.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(StrategyEditView, self).get_context_data(**kwargs)
+        context["strategies"] = get_all_strategies()
+        return context
 
 class StrategyListView(ListView):
     model = Strategy
@@ -66,12 +62,32 @@ class StrategyDetailView(DetailView):
         context["strategies"] = get_all_strategies()
         return context
 
+class StrategyDeleteView(DeleteView):
+    model = Strategy
+    template_name = 'strategies/strategy_delete.html'
+    success_url = reverse_lazy('strategy-list')
+
+    def get_context_data(self, **kwargs):
+        context = super(StrategyDetailView, self).get_context_data(**kwargs)
+        context["strategies"] = get_all_strategies()
+        return context
+
 class TradeCreateView(CreateView):
     model = Trade
     form_class = TradeCreateForm
     
     def get_context_data(self, **kwargs):
         context = super(TradeCreateView, self).get_context_data(**kwargs)
+        context["strategies"] = get_all_strategies()
+        return context
+
+class TradeEditView(UpdateView):
+    model = Trade
+    form_class = TradeCreateForm
+    template_name = "strategies/trade_edit.html"
+    
+    def get_context_data(self, **kwargs):
+        context = super(TradeEditView, self).get_context_data(**kwargs)
         context["strategies"] = get_all_strategies()
         return context
 
@@ -89,6 +105,17 @@ class TradeListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(TradeListView, self).get_context_data(**kwargs)
+        context["strategies"] = get_all_strategies()
+        context["trades"] = get_all_trades()
+        return context
+
+class TradeDeleteView(DeleteView):
+    model = Trade
+    template_name = 'strategies/trade_delete.html'
+    success_url = reverse_lazy('trade-list')
+
+    def get_context_data(self, **kwargs):
+        context = super(TradeDeleteView, self).get_context_data(**kwargs)
         context["strategies"] = get_all_strategies()
         context["trades"] = get_all_trades()
         return context
@@ -126,7 +153,19 @@ def get_recommended_trade(request, pk):
             return response
     raise Http404
 
+def download_ticker_file(request, pk):
+    trade = Trade.objects.get(pk=pk)
+    tickers = trade.tickers
+    path = f"{tickers}"
+    file_path = os.path.join(settings.MEDIA_ROOT, path)
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
+            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+            return response
+    raise Http404
+
 def index(request):
     strategies = get_all_strategies()
-    return render(request, "strategies/base.html", {"strategies": strategies})
+    return render(request, "strategies/home.html", {"strategies": strategies})
 

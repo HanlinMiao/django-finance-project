@@ -1,0 +1,13 @@
+{% extends "strategies/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+	<div class = "content-section">
+		<form method="post">{% csrf_token %}
+            <p>Are you sure you want to delete "{{ object }}"?</p>
+            <div class="form-group">
+                <button class = "btn btn-outline-danger" type ="submit" value="Delete">Confirm</button>
+                <a href="{% url 'trade-list' %}" class="btn btn-outline-warning">Cancel</a>
+            </div>			
+		</form>
+	</div>
+{% endblock content %}

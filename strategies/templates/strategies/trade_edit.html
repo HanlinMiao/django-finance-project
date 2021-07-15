@@ -1,0 +1,20 @@
+{% extends "strategies/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+	<div class = "content-section">
+		<form method='POST' enctype="multipart/form-data">
+			{% csrf_token %}
+			<fieldset class = "form-group">
+				<legend class = "border-bottom mb-4">
+					Trade
+				</legend>
+				{{ form|crispy }}
+				<br>
+				<br>
+				<div class="form-group">
+					<button class = "btn btn-outline-info" type ="submit" value="Save">Update Trade</button>
+					<a href="{% url 'trade-list' %}" class="btn btn-outline-danger">Cancel</a>
+				</div>				
+		</form>
+	</div>
+{% endblock content %}

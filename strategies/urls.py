@@ -1,26 +1,36 @@
 from django.urls import path
 from .views import (
+    TradeDeleteView,
     index,
     StrategyCreateView,
+    StrategyEditView,
     StrategyListView,
+    StrategyDeleteView,
     TradeCreateView,
+    TradeEditView,
     TradeDetailView,
     TradeListView,
     StrategyDetailView,
     StrategyListView,
+    StrategyDeleteView,
     execute_trading_script,
     get_recommended_trade,
-    # strategy_create,
+    download_ticker_file,
 )
 
 urlpatterns = [
     path('', index, name="index"),
     path('strategy/', StrategyListView.as_view(), name="strategy-list"),
     path('strategy/<int:pk>/', StrategyDetailView.as_view(), name='strategy-detail'),
+    path('strategy/<int:pk>/edit/', StrategyEditView.as_view(), name='strategy-edit'),
+    path('strategy/<int:pk>/delete/', StrategyDeleteView.as_view(), name='strategy-delete'),
     path('strategy/new/', StrategyCreateView.as_view(), name ='strategy-create'),
     path('trade/', TradeListView.as_view(), name ='trade-list'),
     path('trade/new/', TradeCreateView.as_view(), name ='trade-create'),
     path('trade/<int:pk>/', TradeDetailView.as_view(), name='trade-detail'),
+    path('trade/<int:pk>/edit/', TradeEditView.as_view(), name='trade-edit'),
+    path('trade/<int:pk>/delete/', TradeDeleteView.as_view(), name='trade-delete'),
     path('trade/<int:pk>/execute/', execute_trading_script, name='execute-script'),
     path('trade/<int:pk>/excel/', get_recommended_trade, name='get-trade'),
+    path('trade/<int:pk>/tickers/', download_ticker_file, name='download-ticker'),
 ]

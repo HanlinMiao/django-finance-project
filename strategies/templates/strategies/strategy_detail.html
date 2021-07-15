@@ -13,8 +13,28 @@
             </div>
             <h5>Script</h5>
             <div>
-                <pre><code class="python">{{strategy.get_script_lines}}</code></pre>
+                <pre style="max-height: 200px; overflow: scroll;"><code class="python">{{strategy.get_script_lines}}</code></pre>
             </div>
+            <table class="pull-left">
+                {% if user.is_authenticated %}
+                <tr><td>
+                    <a href="{% url 'strategy-edit' strategy.id %}" class="btn btn-outline-info pull-left" style="width:100%">
+                        Edit Strategy&nbsp;&nbsp;<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                    </a>
+                </td>
+                <td>
+                    <a href="{% url 'strategy-delete' strategy.id %}" class="btn btn-outline-danger pull-left" style="width:100%">
+                        Delete Strategy&nbsp;&nbsp;<i class="fa fa-trash" aria-hidden="true"></i>
+                    </a>
+                </td>
+                <td>
+                    <a href="{% url 'index' %}" class="btn btn-outline-warning pull-left" style="width:100%">
+                        Homepage&nbsp;&nbsp;<i class="fa fa-home" aria-hidden="true"></i>
+                    </a>
+                </td>
+                </tr>
+                {% endif %}
+            </table>
         </div>
     </div>
 </div>

@@ -7,19 +7,21 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" type = "text/css" href = "{% static 'strategies/main.css' %}">
     <link rel="stylesheet" type = "text/css" href = "{% static 'strategies/style.css' %}">
-    <link rel="stylesheet" type = "text/css" href = "{% static 'strategies/light.box.min.css' %}">
-    <script src = "{% static 'strategies/lightbox-plus-jquery.min.js' %}"></script>
+    <!-- <link rel="stylesheet" type = "text/css" href = "{% static 'strategies/light.box.min.css' %}"> -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/styles/default.min.css">
+    <!-- <script src = "{% static 'strategies/lightbox-plus-jquery.min.js' %}"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.0.3/highlight.min.js"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+
     {% if title %}
     <title>Trada's Paradise - {{title}} </title>
     {% else %}
     <title>Trada's Paradise  </title>
     {% endif %}
+    <!-- favicon -->
     <link rel="apple-touch-icon" sizes="180x180" href="../../static/favicon_package_v0.16/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="../../static/favicon_package_v0.16/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../../static/favicon_package_v0.16/favicon-16x16.png">
@@ -46,13 +48,23 @@
                 </a>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                   <a class="dropdown-item" href="{% url 'strategy-list' %}">See All Strategies&nbsp;&nbsp;<i class="fa fa-balance-scale"></i></a>
-                  <a class="dropdown-item" href="{% url 'strategy-create' %}">Make A New Strategy &nbsp;&nbsp;<i class="fa fa-lightbulb-o" aria-hidden="true"></i></a>
+                  {% if user.is_authenticated %}
+                  <a class="dropdown-item" href="{% url 'strategy-create' %}">Make A New Strategy&nbsp;&nbsp;<i class="fa fa-lightbulb-o" aria-hidden="true"></i></a>
+                  {% endif %}
                   {% for strategy in strategies %}
                     <a class="dropdown-item" href ="{% url 'strategy-detail' strategy.id %}" >{{ strategy.name }}&nbsp;&nbsp;<i class="fa fa-money"></i></a>
                   {% endfor %}
-                  <!-- <a class="dropdown-item" href="#">Equal Weight &nbsp;&nbsp;<i class="fa fa-balance-scale"></i></a>
-                  <a class="dropdown-item" href="#">Quantitative Momentum&nbsp;&nbsp;<i class="fa fa-fighter-jet"></i></a>
-                  <a class="dropdown-item" href="#">Quantitative Value&nbsp;&nbsp;<i class="fa fa-money"></i></a> -->
+                </div>
+              </div>
+              <div class="dropdown">
+                <a class=" nav-item nav-link dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Trades
+                </a>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <a class="dropdown-item" href="{% url 'trade-list' %}">See All Trades&nbsp;&nbsp;<i class="fa fa-balance-scale"></i></a>
+                  {% if user.is_authenticated %}
+                  <a class="dropdown-item" href="{% url 'trade-create' %}">Make A New Trade&nbsp;&nbsp;<i class="fa fa-handshake-o" aria-hidden="true"></i></a>
+                  {% endif %}
                 </div>
               </div>
              <div class="dropdown">
@@ -70,12 +82,11 @@
             <!-- Navbar Right Side -->
             <div class="navbar-nav">
               {% if user.is_authenticated %}
-              <a class="nav-item nav-link" href="{% url 'trade-create' %}">New Trade &nbsp;&nbsp;<i class="fa fa-balance-scale"></i></a>
-                <a class="nav-item nav-link" href="#">Profile</a>
-                <a class="nav-item nav-link" href="#">Logout </a>
+                <a class="nav-item nav-link" href="#">Profile&nbsp;&nbsp;<i class="fa fa-address-book"></i></a>
+                <a class="nav-item nav-link" href="#">Logout&nbsp;&nbsp;<i class="fa fa-sign-out"></i></a>
               {% else %}
-                <a class="nav-item nav-link" href="#">Login</a>
-                <a class="nav-item nav-link" href="#">Register</a>
+                <a class="nav-item nav-link" href="#">Login&nbsp;&nbsp;<i class="fa fa-sign-in"></i></a>
+                <a class="nav-item nav-link" href="#">Register&nbsp;&nbsp;<i class="fa fa-registered"></i></a>
               {% endif %}
             </div>
           </div>
@@ -105,23 +116,23 @@
                   <div class="card-body text-left p-2 p-lg-2 pt-0 pt-lg-0">
                       <div class="feature bg-primary bg-gradient text-white rounded-3 mb-4 mt-n4"><i class="bi bi-collection"></i></div>
                         <table>
-                          <caption style="caption-side:top">Quick Navigation</caption>
+                          <caption style="caption-side:top">Quick Access</caption>
                           {% if user.is_authenticated %}
                           <tr><td>
-                            <a href="{% url 'strategy-create' %}" class="btn btn-outline-success">New Strategy</a>
+                            <a href="{% url 'strategy-create' %}" class="btn btn-outline-success" style="width: 100%">New Strategy&nbsp;&nbsp;<i class="fa fa-lightbulb-o" aria-hidden="true"></i></a>
                           </td></tr>
                           <tr><td>
-                            <a href="{% url 'trade-create' %}" class="btn btn-outline-success">New Trade</a>
+                            <a href="{% url 'trade-create' %}" class="btn btn-outline-success" style="width: 100%">New Trade&nbsp;&nbsp;<i class="fa fa-suitcase"></i></a>
                           </td></tr>
                           {% endif %}
                           <tr><td>
-                            <a href="{% url 'strategy-list' %}" class="btn btn-outline-success">All Strategies</a>
+                            <a href="{% url 'strategy-list' %}" class="btn btn-outline-success" style="width: 100%">All Strategies&nbsp;&nbsp;<i class="fa fa-book"></i></a>
                           </td></tr>
                           <tr><td>
-                            <a href="{% url 'trade-list' %}" class="btn btn-outline-success">All Trades</a>
+                            <a href="{% url 'trade-list' %}" class="btn btn-outline-success" style="width: 100%">All Trades&nbsp;&nbsp;<i class="fa fa-plane"></i></a>
                           </td></tr>
                           <tr><td>
-                            <a href="{% url 'index' %}" class="btn btn-outline-success">About the Author</a>
+                            <a href="{% url 'index' %}" class="btn btn-outline-success" style="width: 100%">About the Author&nbsp;&nbsp;<i class="fa fa-user-secret"></i></a>
                           </td></tr>
                       </table>
                     </div>

@@ -5,7 +5,9 @@
         <div class="col-md-12">
             <h5>Trade Ticker File</h5>
             <div class="project-info-box mt-0">
-                <p class="mb-0">{{trade.tickers}}</p>
+                <a class = "mb-0" href="{% url 'download-ticker' trade.id %}" download="tickers.csv" target="_blank">
+                    <p class="mb-0" style="color: rgb(22, 18, 18)">{{trade.tickers}}</p>
+                </a>
             </div>
             <h5>Portfolio Size</h5>
             <div class="project-info-box">
@@ -13,21 +15,36 @@
             </div>
             <h5>Strategy Selected</h5>
             <div class="project-info-box">
-                <p class="mb-0">{{trade.trading_strategy.name}}</p>
+                <a class = "mb-0" href="{% url 'strategy-detail' trade.trading_strategy.id %}">
+                    <p class="mb-0" style="color: rgb(22, 18, 18)">{{trade.trading_strategy.name}}</p>
+                </a>
             </div>
-            <table class="pull-right">
+            <table>
                 {% if user.is_authenticated %}
                 <tr><td>
-                    <a href="{% url 'execute-script' trade.id %}" class="btn btn-outline-success pull-right">Run Script</a>
+                    <a href="{% url 'execute-script' trade.id %}" class="btn btn-outline-warning pull-left" style="width:100%">
+                        Run Script&nbsp;&nbsp;<i class="fa fa-file-code-o" aria-hidden="true"></i>
+                    </a>
+                </td>
+                </tr>
+                <tr>
+                <td>
+                    <a href="{% url 'get-trade' trade.id %}" class="btn btn-outline-success pull-left" style="width:100%" download="recommended_trades.xlsx" target="_blank">
+                        Get Recommended Trade(.xlsx)&nbsp;&nbsp;<i class="fa fa-file-excel-o" aria-hidden="true"></i>
+                    </i>
+                    </a>
                 </td></tr>
                 <tr><td>
-                    <a href="{% url 'get-trade' trade.id %}" class="btn btn-outline-success pull-right" download="recommended_trades.xlsx" target="_blank">Get Recommended Trade(.xlsx)</a>
-                </td></tr>
-                <tr><td>
-                    <a href="{% url 'index' %}" class="btn btn-outline-info pull-right">Edit Trade</a>
-                </td></tr>
-                <tr><td>
-                    <a href="{% url 'index' %}" class="btn btn-outline-danger pull-right">Delete Trade</a>
+                    <a href="{% url 'trade-edit' trade.id %}" class="btn btn-outline-info pull-left" style="width:100%">
+                        Edit Trade&nbsp;&nbsp;<i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                    </a>
+                </td>
+                </tr>
+                <tr>
+                <td>
+                    <a href="{% url 'trade-delete' trade.id%}" class="btn btn-outline-danger pull-left" style="width:100%">
+                        Delete Trade&nbsp;&nbsp;<i class="fa fa-trash" aria-hidden="true"></i>
+                    </a>
                 </td></tr>
                 {% endif %}
             </table>

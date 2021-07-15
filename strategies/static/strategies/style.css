@@ -131,7 +131,7 @@
   font-size: 10px;
 }
 td {
-  padding-bottom: 20px;
-  size: 600px;
+  padding:30px;
+  /* padding-bottom: 20px; */
+  width: 1000px;
 }
-
