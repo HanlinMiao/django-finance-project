@@ -2,6 +2,7 @@ from django.urls import path
 from .views import (
     TradeDeleteView,
     index,
+    get_live_price,
     StrategyCreateView,
     StrategyEditView,
     StrategyListView,
@@ -16,10 +17,15 @@ from .views import (
     execute_trading_script,
     get_recommended_trade,
     download_ticker_file,
+    download_script,
+    script_loading,
+    live_view
 )
 
 urlpatterns = [
     path('', index, name="index"),
+    path('<str:stock>/graph/', live_view, name="stock-price"),
+    path('<str:stock>/ajax-price/', get_live_price, name="price"),
     path('strategy/', StrategyListView.as_view(), name="strategy-list"),
     path('strategy/<int:pk>/', StrategyDetailView.as_view(), name='strategy-detail'),
     path('strategy/<int:pk>/edit/', StrategyEditView.as_view(), name='strategy-edit'),
@@ -33,4 +39,6 @@ urlpatterns = [
     path('trade/<int:pk>/execute/', execute_trading_script, name='execute-script'),
     path('trade/<int:pk>/excel/', get_recommended_trade, name='get-trade'),
     path('trade/<int:pk>/tickers/', download_ticker_file, name='download-ticker'),
+    path('trade/<int:pk>/script/', download_script, name='download-script'),
+    path('trade/<int:pk>/loading/', script_loading, name='loading'),
 ]

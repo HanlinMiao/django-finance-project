@@ -1,10 +1,11 @@
 from django.db import models
 from django.urls import reverse
+from django.core.validators import FileExtensionValidator
 
 class Strategy(models.Model):
     name = models.CharField(max_length=255, unique=True)
     description = models.CharField(max_length=255)
-    script = models.FileField(upload_to="strategy_scripts/")
+    script = models.FileField(upload_to="strategy_scripts/", validators=[FileExtensionValidator(allowed_extensions=['py'])])
 
     def get_absolute_url(self):
         return reverse('strategy-detail', kwargs={'pk' : self.pk})
@@ -16,7 +17,7 @@ class Strategy(models.Model):
         return content
 
 class Trade(models.Model):
-    tickers = models.FileField(upload_to="input_files/")
+    tickers = models.FileField(upload_to="input_files/", validators=[FileExtensionValidator(allowed_extensions=['csv'])])
     portfolio_size = models.FloatField()
     trading_strategy = models.ForeignKey(Strategy, on_delete=models.CASCADE)
 

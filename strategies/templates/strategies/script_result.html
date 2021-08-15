@@ -1,0 +1,131 @@
+{% extends "strategies/base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+<style>
+    #loader {
+        position: absolute;
+        left: 40%;
+        top: 40%;
+        width: 120px;
+        height: 120px;
+        margin: -76px 0 0 -76px;
+        border: 16px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 16px solid blue;
+        border-right: 16px solid green;
+        border-bottom: 16px solid red;
+        border-left: 16px solid yellow;
+        -webkit-animation: spin 2s linear infinite;
+        animation: spin 2s linear infinite;
+    }
+    #myTable {
+        position: absolute;
+        left: 10%;
+        top: 70%;
+    }
+
+    @-webkit-keyframes spin {
+        0% { -webkit-transform: rotate(0deg); }
+        100% { -webkit-transform: rotate(360deg); }
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    .animate-bottom {
+        position: relative;
+        -webkit-animation-name: animatebottom;
+        -webkit-animation-duration: 1s;
+        animation-name: animatebottom;
+        animation-duration: 1s
+    }
+
+    @-webkit-keyframes animatebottom {
+        from { bottom:-100px; opacity:0 } 
+        to { bottom:0px; opacity:1 }
+    }
+
+    @keyframes animatebottom { 
+        from{ bottom:-100px; opacity:0 } 
+        to{ bottom:0; opacity:1 }
+    }
+
+    #myDiv {
+        border-radius: 10px;
+        position: absolute;
+        left: 10%;
+        top: 40%;
+        display: none;
+        text-align: left;
+        width: 50%
+    }
+    #result{
+        display: none;
+    }
+</style>
+<div>
+    <div id="loader"></div>
+    <div style="display:none;" id="myDiv" class="animate-bottom">
+        <h6 style = "color:black; "id="status"></h6>
+        <p style = "color:black;" id="output"></p>
+    </div>
+    <table id=myTable>
+        {% if user.is_authenticated %}
+        <tr>
+            <td>
+                <button id="Execute" class="btn btn-outline-warning pull-left" style="width:100%">
+                    Run Script Again&nbsp;&nbsp;<i class="fa fa-file-code-o" aria-hidden="true"></i>
+                </button>
+            </td>
+            <td>
+                <a href="{% url 'trade-detail' trade.id %}" class="btn btn-outline-info pull-left" style="width:100%">
+                    Go back to Trade&nbsp;&nbsp;<i class="fa fa-file-excel-o" aria-hidden="true"></i>
+                </i>
+                </a>
+            </td>
+        </tr>
+        <tr>
+            <td id="result">
+                <a href="{% url 'get-trade' trade.id %}" class="btn btn-outline-success pull-left" style="width:100%" download="recommended_trades.xlsx" target="_blank">
+                    Get Recommended Trade(.xlsx)&nbsp;&nbsp;<i class="fa fa-file-excel-o" aria-hidden="true"></i>
+                </i>
+                </a>
+            </td>
+        </tr>
+        {% endif %}
+    </table>
+</div>
+<script>
+    function showPage() {
+      document.getElementById("loader").style.display = "none";
+      document.getElementById("myDiv").style.display = "block";
+      document.getElementById("result").style.display = "block";
+    }
+    function refresh(){
+      document.getElementById("loader").style.display = "block";
+      document.getElementById("myDiv").style.display = "none";
+      document.getElementById("result").style.display = "none";
+    }
+
+    $(window).load(function myFunction() {
+        $.ajax({
+            url: "{% url 'execute-script' trade.id %}",
+            success:  function(response){
+                showPage()
+                document.getElementById("output").innerHTML = "Output: " + response.output
+                document.getElementById("status").innerHTML = "Script Status: " + response.status
+            }
+        });
+    })
+     $(function () {
+        $('#Execute').on('click', function () {
+            window.location.reload();
+            $.ajax({
+                url: "{% url 'loading' trade.id %}",
+            });
+        });
+    });
+</script>
+{% endblock content %}

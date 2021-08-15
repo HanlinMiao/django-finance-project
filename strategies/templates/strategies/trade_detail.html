@@ -22,18 +22,11 @@
             <table>
                 {% if user.is_authenticated %}
                 <tr><td>
-                    <a href="{% url 'execute-script' trade.id %}" class="btn btn-outline-warning pull-left" style="width:100%">
+                    <a href="{% url 'loading' trade.id %}" class="btn btn-outline-warning pull-left" style="width:100%">
                         Run Script&nbsp;&nbsp;<i class="fa fa-file-code-o" aria-hidden="true"></i>
                     </a>
                 </td>
                 </tr>
-                <tr>
-                <td>
-                    <a href="{% url 'get-trade' trade.id %}" class="btn btn-outline-success pull-left" style="width:100%" download="recommended_trades.xlsx" target="_blank">
-                        Get Recommended Trade(.xlsx)&nbsp;&nbsp;<i class="fa fa-file-excel-o" aria-hidden="true"></i>
-                    </i>
-                    </a>
-                </td></tr>
                 <tr><td>
                     <a href="{% url 'trade-edit' trade.id %}" class="btn btn-outline-info pull-left" style="width:100%">
                         Edit Trade&nbsp;&nbsp;<i class="fa fa-pencil-square-o" aria-hidden="true"></i>

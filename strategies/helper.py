@@ -1,4 +1,5 @@
 from .models import Strategy, Trade
+from  yahoo_fin import stock_info as si
 
 BLANK_CHOICE = [("-----", "")]
 
@@ -35,3 +36,16 @@ def get_strategy_choices():
     for strategy in iquery:
         iquery_choices += [(Strategy.objects.get(id=strategy.id), strategy.name)]
     return iquery_choices
+
+def call_yahoo_finance_api():
+    dic = {}
+    dic["Dow Jones"] = si.tickers_dow()
+    dic["S&P 500"] = si.tickers_sp500()
+    dic["NASDAQ"] = si.tickers_nasdaq()
+
+    return dic
+
+from django.template.defaulttags import register
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key)
