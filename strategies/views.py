@@ -24,7 +24,8 @@ from .secrets import IEX_CLOUD_API_TOKEN
 from subprocess import Popen, PIPE, STDOUT
 import os
 from  yahoo_fin import stock_info as si
-
+import yfinance as yf
+from datetime import date, timedelta, datetime
 
 class StrategyCreateView(CreateView):
     model = Strategy
@@ -194,13 +195,60 @@ def index(request):
 
 def live_view(request, stock):
     strategies = get_all_strategies()
-    return render(request, "strategies/plot.html", {"strategies": strategies, "stock": stock})
+    data = yf.download(tickers=stock, period="1d", interval="1m")
+    dps = data['Adj Close']
+    dic = []
+    for index, value in dps.items():
+        dic.append(value)
+    return render(request, "strategies/live_prices.html", {"strategies": strategies, "stock": stock, "dps": dic})
 
+def historical_chart(request, stock):
+    strategies = get_all_strategies()
+    return render(request, "strategies/historical_prices.html", {"strategies": strategies, "stock": stock})
 
 def get_live_price(request, stock):
-    if request.method == 'GET': 
+    if request.method == 'GET':
         price = si.get_live_price(stock)
+        time = datetime.now().time()
+        time = time.strftime("%H:%M")
         response_data = {}
         response_data['price'] = price
+        response_data['time'] = time
         return JsonResponse(response_data)
+
+def get_historical_price(request, stock, start_date="", end_date="", interval=""):
+    """Populate Line Chart Data."""
+    # Get Labels
+    # Iterate through time, and skip the weekend
+    labels = []
+    if start_date == "" and end_date=="":
+        start_date_label = date.today() - timedelta(days=30)
+        end_date_label = date.today()
+        delta = timedelta(days=1)
+        if start_date_label.weekday() <= 4: #skip the weekend
+            labels.append(start_date_label)
+
+        while start_date_label <= end_date_label:
+            start_date_label += delta
+            if start_date_label.weekday() <= 4: #skip the weekend
+                labels.append(start_date_label)
+
+    # Get Financial Data
+    if start_date == "" and end_date=="":
+        start_date = str((date.today() - timedelta(days=30)).strftime("%m/%d/%Y"))
+        end_date = str(date.today().strftime("%m/%d/%Y"))
+      
+    if interval == "" or interval == "daily":
+        interval = "1d"
+    elif interval == "weekly":
+        interval = "1wk"
+    else:
+        interval = "1m"
+    data = si.get_data(stock, start_date=start_date, end_date=end_date, interval=interval)
+    
+    response_data = {}
+    response_data['labels'] = labels
+    response_data['data'] = list(data.adjclose)
+    return JsonResponse(response_data)
+
 

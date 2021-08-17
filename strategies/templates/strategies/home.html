@@ -5,8 +5,9 @@
 <script>
     /* When the user clicks on the button,
     toggle between hiding and showing the dropdown content */
-    function myFunction(stock) {
-        document.getElementById(stock).classList.toggle("show");
+    function myFunction(stock, index) {
+        let id = stock.concat("-", index);
+        document.getElementById(id).classList.toggle("show");
     }
 
     // Close the dropdown menu if the user clicks outside of it
@@ -77,12 +78,12 @@
                 {% for stock in stocks|get_item:index %}
                     <td style="padding:10px; border: 1px solid #d3d3d3; width:100% fit-content; font-size: 12px;">
                         <div class="dropdown">
-                            <button onclick="myFunction('{{ stock }}')" class="dropbtn">
+                            <button onclick="myFunction('{{ stock }}', '{{ index }}')" class="dropbtn">
                                 {{ stock }}
                             </button>
-                            <div id = {{ stock }} class="dropdown-content">
+                            <div id = "{{ stock }}-{{ index }}" class="dropdown-content">
                                 <a href="{% url 'stock-price' stock %}"> Live Data </a>
-                                <a href="{% url 'stock-price' stock %}"> Historical Prices </a>                            
+                                <a href="{% url 'history-price' stock %}"> Historical Prices </a>                            
                             </div>
                         </div> 
                     </td>                   

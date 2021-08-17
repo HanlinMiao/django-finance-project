@@ -1,0 +1,90 @@
+{% extends "strategies/base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+<h1>{% block title %} Historical Price for {{stock}} {% endblock %}</h1>
+<div class="row">
+	<div class="col-md-12">
+        <div id="container" style="width: 100%;">
+            <canvas id="line-chart" data-url="{% url 'get-historical-prices' stock %}"></canvas>
+          <script>
+            window.onload = function() {
+                $.ajax({
+                    url: "{% url 'get-historical-prices' stock %}",
+                    success: function (data) {
+                        var ctx = document.getElementById('line-chart').getContext('2d');
+                        window.myLine = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: data.labels,
+                                datasets: [{
+                                    label: 'Historical Price Chart'.concat(" for ",  "{{ stock }}"),
+                                    data: data.data,
+                                    backgroundColor: [
+                                        'rgba(127,255,0, 0.2)',
+                                        'rgba(54, 162, 235, 0.2)',
+                                        'rgba(255, 206, 86, 0.2)',
+                                        'rgba(75, 192, 192, 0.2)',
+                                        'rgba(153, 102, 255, 0.2)',
+                                        'rgba(255, 159, 64, 0.2)'
+                                    ],
+                                    borderColor: [
+                                        'rgba(127,255,0,1)',
+                                        'rgba(54, 162, 235, 1)',
+                                        'rgba(255, 206, 86, 1)',
+                                        'rgba(75, 192, 192, 1)',
+                                        'rgba(153, 102, 255, 1)',
+                                        'rgba(255, 159, 64, 1)'
+                                    ],
+                                    borderWidth: 4
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    yAxes: [{
+                                        ticks: {
+                                            min: 90
+                                        }
+                                    }]
+                                }
+                            }
+                        });
+                    }
+                })
+            };
+          </script>
+        </div>
+    </div>
+</div>
+<table style="width: 100%">
+    <tr>
+        <td>
+            <button id="Execute" class="btn btn-outline-warning" style="width:70%">
+                Daily&nbsp;&nbsp;<i class="fa fa-file-code-o" aria-hidden="true"></i>
+            </button>
+        </td>
+        <td>
+            <a href="#" class="btn btn-outline-info" style="width:70%">
+                Weekly&nbsp;&nbsp;<i class="fa fa-file-excel-o" aria-hidden="true"></i>
+            </i>
+            </a>
+        </td>
+        <td id="result">
+            <a href="#" class="btn btn-outline-success" style="width:70%" >
+                Monthly&nbsp;&nbsp;<i class="fa fa-file-excel-o" aria-hidden="true"></i>
+            </i>
+            </a>
+        </td>
+        <td >
+            <a href="#" class="btn btn-outline-danger" style="width:70%" >
+                Yearly&nbsp;&nbsp;<i class="fa fa-file-excel-o" aria-hidden="true"></i>
+            </i>
+            </a>
+        </td>
+    </tr>
+</table>
+{% endblock %}
