@@ -2,12 +2,22 @@
 {% load crispy_forms_tags %}
 {% load static %}
 {% block content %}
-<!DOCTYPE HTML>
-<html>
 <head>
 
 <script>
     function get_live_price() {
+        var price;
+        $.ajax({
+            url: "{% url 'price' stock=stock %}",
+            success:  function(response){
+                price = response.price
+                time = response.time
+                document.getElementById("price").value = price
+                document.getElementById("time").value = time
+            }
+        });
+    };
+    function get_daily_price() {
         var price;
         $.ajax({
             url: "{% url 'price' stock=stock %}",
@@ -116,6 +126,4 @@
     </tr>
 </table>
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-</body>
-</html>
 {% endblock content %}

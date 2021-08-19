@@ -26,6 +26,8 @@ import os
 from  yahoo_fin import stock_info as si
 import yfinance as yf
 from datetime import date, timedelta, datetime
+import json    
+
 
 class StrategyCreateView(CreateView):
     model = Strategy
@@ -199,13 +201,10 @@ def live_view(request, stock):
     data = yf.download(tickers=stock, period="1d", interval="1m")
     dps = data['Adj Close']
     dic = []
+    print(dps)
     for index, value in dps.items():
         dic.append(value)
     return render(request, "strategies/live_prices.html", {"strategies": strategies, "stock": stock, "dps": dic})
-
-def historical_chart(request, stock, interval):
-    strategies = get_all_strategies()
-    return render(request, "strategies/historical_prices.html", {"strategies": strategies, "stock": stock, "interval": interval})
 
 def get_live_price(request, stock):
     if request.method == 'GET':
@@ -217,39 +216,13 @@ def get_live_price(request, stock):
         response_data['time'] = time
         return JsonResponse(response_data)
 
+def historical_chart(request, stock, interval):
+    strategies = get_all_strategies()
+    return render(request, "strategies/historical_prices.html", {"strategies": strategies, "stock": stock, "interval": interval})
+
 def get_historical_price(request, stock, interval):
     """Populate Line Chart Data."""
-    # Get Labels
-    # Iterate through time, and skip the weekend
     labels = []
-    if interval == "daily":
-        interval = "1d"
-        days = 1
-        total_days = 10
-    elif interval == "weekly":
-        interval = "1wk"
-        days = 7
-        total_days = 30
-    elif interval == "monthly":
-        interval = "1mo"
-        days = 30
-        total_days = 365
-    else:
-        interval = "1yr"
-        days = 30
-        total_days = 365 * 3
-
-    start_date_label = date.today() - timedelta(days=total_days)
-    end_date_label = date.today()
-    delta = timedelta(days=days)
-    if start_date_label.weekday() <= 4: #skip the weekend
-        labels.append(start_date_label)
-
-    while (start_date_label + delta) <= end_date_label:
-        start_date_label += delta
-        if start_date_label.weekday() <= 4: #skip the weekend
-            labels.append(start_date_label)
-
     # Get Financial Data
     if interval == "" or interval == "daily":
         interval = "1d"
@@ -265,12 +238,10 @@ def get_historical_price(request, stock, interval):
         days = 365 * 3
     start_date = str((date.today() - timedelta(days=days)).strftime("%m/%d/%Y"))
     end_date = str(date.today().strftime("%m/%d/%Y"))
-
     data = si.get_data(stock, start_date=start_date, end_date=end_date, interval=interval)
-    
+    for time in data.index:
+        labels.append(time.strftime("%m/%d/%Y"))
     response_data = {}
     response_data['labels'] = labels
     response_data['data'] = list(data.adjclose)
     return JsonResponse(response_data)
-
-
