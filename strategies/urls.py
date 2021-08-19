@@ -27,9 +27,9 @@ from .views import (
 urlpatterns = [
     path('', index, name="index"),
     path('<str:stock>/graph/', live_view, name="stock-price"),
-    path('<str:stock>/history-graph/', historical_chart, name="history-price"),
     path('<str:stock>/ajax-price/', get_live_price, name="price"),
-    path('<str:stock>/ajax-historical-price/', get_historical_price, name="get-historical-prices"),
+    path('<str:stock>/<str:interval>/history-graph/', historical_chart, name="history-price"),
+    path('<str:stock>/<str:interval>/ajax-historical-price/', get_historical_price, name="get-historical-prices"),
     path('strategy/', StrategyListView.as_view(), name="strategy-list"),
     path('strategy/<int:pk>/', StrategyDetailView.as_view(), name='strategy-detail'),
     path('strategy/<int:pk>/edit/', StrategyEditView.as_view(), name='strategy-edit'),

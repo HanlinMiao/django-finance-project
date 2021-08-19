@@ -191,7 +191,8 @@ def download_script(request, pk):
 def index(request):
     strategies = get_all_strategies()
     stocks = call_yahoo_finance_api()
-    return render(request, "strategies/home.html", {"strategies": strategies, "stocks": stocks})
+    interval = "daily"
+    return render(request, "strategies/home.html", {"strategies": strategies, "stocks": stocks, "interval": interval})
 
 def live_view(request, stock):
     strategies = get_all_strategies()
@@ -202,48 +203,69 @@ def live_view(request, stock):
         dic.append(value)
     return render(request, "strategies/live_prices.html", {"strategies": strategies, "stock": stock, "dps": dic})
 
-def historical_chart(request, stock):
+def historical_chart(request, stock, interval):
     strategies = get_all_strategies()
-    return render(request, "strategies/historical_prices.html", {"strategies": strategies, "stock": stock})
+    return render(request, "strategies/historical_prices.html", {"strategies": strategies, "stock": stock, "interval": interval})
 
 def get_live_price(request, stock):
     if request.method == 'GET':
         price = si.get_live_price(stock)
-        time = datetime.now().time()
+        time = datetime.now() - timedelta(hours=4)
         time = time.strftime("%H:%M")
         response_data = {}
         response_data['price'] = price
         response_data['time'] = time
         return JsonResponse(response_data)
 
-def get_historical_price(request, stock, start_date="", end_date="", interval=""):
+def get_historical_price(request, stock, interval):
     """Populate Line Chart Data."""
     # Get Labels
     # Iterate through time, and skip the weekend
     labels = []
-    if start_date == "" and end_date=="":
-        start_date_label = date.today() - timedelta(days=30)
-        end_date_label = date.today()
-        delta = timedelta(days=1)
+    if interval == "daily":
+        interval = "1d"
+        days = 1
+        total_days = 10
+    elif interval == "weekly":
+        interval = "1wk"
+        days = 7
+        total_days = 30
+    elif interval == "monthly":
+        interval = "1mo"
+        days = 30
+        total_days = 365
+    else:
+        interval = "1yr"
+        days = 30
+        total_days = 365 * 3
+
+    start_date_label = date.today() - timedelta(days=total_days)
+    end_date_label = date.today()
+    delta = timedelta(days=days)
+    if start_date_label.weekday() <= 4: #skip the weekend
+        labels.append(start_date_label)
+
+    while (start_date_label + delta) <= end_date_label:
+        start_date_label += delta
         if start_date_label.weekday() <= 4: #skip the weekend
             labels.append(start_date_label)
 
-        while start_date_label <= end_date_label:
-            start_date_label += delta
-            if start_date_label.weekday() <= 4: #skip the weekend
-                labels.append(start_date_label)
-
     # Get Financial Data
-    if start_date == "" and end_date=="":
-        start_date = str((date.today() - timedelta(days=30)).strftime("%m/%d/%Y"))
-        end_date = str(date.today().strftime("%m/%d/%Y"))
-      
     if interval == "" or interval == "daily":
         interval = "1d"
+        days = 30
     elif interval == "weekly":
         interval = "1wk"
+        days = 60
+    elif interval == "monthly":
+        interval = "1mo"
+        days = 365
     else:
-        interval = "1m"
+        interval = "1mo"
+        days = 365 * 3
+    start_date = str((date.today() - timedelta(days=days)).strftime("%m/%d/%Y"))
+    end_date = str(date.today().strftime("%m/%d/%Y"))
+
     data = si.get_data(stock, start_date=start_date, end_date=end_date, interval=interval)
     
     response_data = {}

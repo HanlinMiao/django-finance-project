@@ -10,11 +10,11 @@
 <div class="row">
 	<div class="col-md-12">
         <div id="container" style="width: 100%;">
-            <canvas id="line-chart" data-url="{% url 'get-historical-prices' stock %}"></canvas>
+            <canvas id="line-chart" data-url="{% url 'get-historical-prices' stock interval %}"></canvas>
           <script>
             window.onload = function() {
                 $.ajax({
-                    url: "{% url 'get-historical-prices' stock %}",
+                    url: "{% url 'get-historical-prices' stock interval %}",
                     success: function (data) {
                         var ctx = document.getElementById('line-chart').getContext('2d');
                         window.myLine = new Chart(ctx, {
@@ -47,7 +47,7 @@
                                 scales: {
                                     yAxes: [{
                                         ticks: {
-                                            min: 90
+                                            min: 0
                                         }
                                     }]
                                 }
@@ -63,24 +63,24 @@
 <table style="width: 100%">
     <tr>
         <td>
-            <button id="Execute" class="btn btn-outline-warning" style="width:70%">
-                Daily&nbsp;&nbsp;<i class="fa fa-file-code-o" aria-hidden="true"></i>
+            <a href="{% url 'stock-price' stock %}" class="btn btn-outline-warning" style="width:80%">
+                Live Prices&nbsp;&nbsp;<i class="fa fa-line-chart" aria-hidden="true"></i>
             </button>
         </td>
         <td>
-            <a href="#" class="btn btn-outline-info" style="width:70%">
+            <a href="{% url 'history-price' stock 'weekly' %}" class="btn btn-outline-info" style="width:80%">
                 Weekly&nbsp;&nbsp;<i class="fa fa-file-excel-o" aria-hidden="true"></i>
             </i>
             </a>
         </td>
         <td id="result">
-            <a href="#" class="btn btn-outline-success" style="width:70%" >
+            <a href="{% url 'history-price' stock 'monthly' %}" class="btn btn-outline-success" style="width:80%" >
                 Monthly&nbsp;&nbsp;<i class="fa fa-file-excel-o" aria-hidden="true"></i>
             </i>
             </a>
         </td>
         <td >
-            <a href="#" class="btn btn-outline-danger" style="width:70%" >
+            <a href="{% url 'history-price' stock 'yearly' %}" class="btn btn-outline-danger" style="width:80%" >
                 Yearly&nbsp;&nbsp;<i class="fa fa-file-excel-o" aria-hidden="true"></i>
             </i>
             </a>
