@@ -1,0 +1,46 @@
+{% extends "strategies/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<style>
+    input[type=text], select {
+      width: 100%;
+      padding: 12px 20px;
+      margin: 8px 0;
+      display: inline-block;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    
+    input[type=submit] {
+      width: 100%;
+      background-color: #4CAF50;
+      color: white;
+      padding: 14px 20px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    
+    input[type=submit]:hover {
+      background-color: #45a049;
+    }
+</style>
+	<div class = "content-section">
+        <form action="{% url 'search-stock' %}" method="get">
+			{% csrf_token %}
+			<fieldset class = "form-group">
+				<legend class = "border-bottom mb-4">
+					Enter the Ticker Symbol to Search
+				</legend>
+                    <input name="q" type="text" placeholder="Search for a Stock">
+                <br>
+				<br>
+				<div class="form-group">
+					<button class = "btn btn-outline-info" type ="submit" value="Search">Search</button>
+					<a href="{% url 'index' %}" class="btn btn-outline-warning">Cancel</a>
+				</div>				
+		</form>
+	</div>
+{% endblock content %}

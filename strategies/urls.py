@@ -20,8 +20,9 @@ from .views import (
     download_script,
     script_loading,
     live_view,
+    search_stock,
     historical_chart,
-    get_historical_price
+    get_historical_price,
 )
 
 urlpatterns = [
@@ -45,4 +46,5 @@ urlpatterns = [
     path('trade/<int:pk>/tickers/', download_ticker_file, name='download-ticker'),
     path('trade/<int:pk>/script/', download_script, name='download-script'),
     path('trade/<int:pk>/loading/', script_loading, name='loading'),
+    path('search-stock/', search_stock, name='search-stock'),
 ]

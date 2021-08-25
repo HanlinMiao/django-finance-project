@@ -2,6 +2,7 @@ from django.conf import settings
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django import forms
+from django.contrib import messages
 from django.views.generic import (
     ListView,
     DetailView,
@@ -26,7 +27,8 @@ import os
 from  yahoo_fin import stock_info as si
 import yfinance as yf
 from datetime import date, timedelta, datetime
-import json    
+from django.urls import reverse
+from urllib.parse import urlencode
 
 
 class StrategyCreateView(CreateView):
@@ -195,6 +197,18 @@ def index(request):
     stocks = call_yahoo_finance_api()
     interval = "daily"
     return render(request, "strategies/home.html", {"strategies": strategies, "stocks": stocks, "interval": interval})
+
+def search_stock(request):
+    if request.GET.get('q', False):
+        try:
+            stock = request.GET.get('q', False)
+            return redirect('stock-price', stock)
+        except AssertionError:
+            messages.warning(f'{stock} data not available at this moment')
+            return redirect('search-stock')
+
+    strategies = get_all_strategies()
+    return render(request, "strategies/search_stock.html", {"strategies": strategies})
 
 def live_view(request, stock):
     strategies = get_all_strategies()
