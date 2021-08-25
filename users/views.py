@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
+from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm, StockUpdateForm
+from .models import Profile, User
 
 
 def register(request):
@@ -38,6 +39,43 @@ def profile(request):
 		}
 
 	return render(request, 'users/profile.html', context)
+
+@login_required
+def user_stock_dashboard(request, username):
+	user = User.objects.get(username=username)
+	profile = Profile.objects.get(user=user)
+	stocks = profile.get_stocks().split(",")
+	context = {
+		"user": user,
+		"stocks": stocks,
+	}
+
+	return render(request, 'users/track_stocks.html', context)
+
+@login_required
+def add_stock_to_watchlist(request, username, stock):
+	user = User.objects.get(username=username)
+	profile = Profile.objects.get(user=user)
+	watch_list = profile.stocks.split(",")
+	if stock in watch_list:
+		messages.warning(request, f'This stock {stock} is already in your watchlist')
+		return redirect('index')
+	else:
+		profile.stocks += ("," + stock)
+		profile.save()
+		watch_list.append(stock)
+		messages.success(request, f'This stock {stock} has been added to your watchlist')
+	
+	context = {
+		"user": user,
+		"stocks": sorted(watch_list),
+	}
+
+	return render(request, 'users/track_stocks.html', context)
+
+	
+	
+
 
 """
 messages.debug

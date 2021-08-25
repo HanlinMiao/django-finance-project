@@ -239,9 +239,10 @@ def get_historical_price(request, stock, interval):
     start_date = str((date.today() - timedelta(days=days)).strftime("%m/%d/%Y"))
     end_date = str(date.today().strftime("%m/%d/%Y"))
     data = si.get_data(stock, start_date=start_date, end_date=end_date, interval=interval)
-    for time in data.index:
+    
+    for time in data.dropna().index:
         labels.append(time.strftime("%m/%d/%Y"))
     response_data = {}
     response_data['labels'] = labels
-    response_data['data'] = list(data.adjclose)
+    response_data['data'] = list(data.dropna().adjclose)
     return JsonResponse(response_data)

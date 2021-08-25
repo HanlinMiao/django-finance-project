@@ -40,8 +40,8 @@ def get_strategy_choices():
 def call_yahoo_finance_api():
     dic = {}
     dic["Dow Jones"] = si.tickers_dow()
-    dic["S&P 500"] = si.tickers_sp500()
-    dic["NASDAQ"] = si.tickers_nasdaq()
+    dic["S&P 500"] = si.tickers_sp500()[:100]
+    dic["NASDAQ"] = si.tickers_nasdaq()[:100]
 
     return dic
 

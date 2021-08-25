@@ -1,0 +1,23 @@
+{% extends "strategies/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+	<div class = "content-section">
+		<form method = "POST">
+			{% csrf_token %}
+			<fieldset class = "form-group">
+				<legend class = "border-bottom mb-4">
+					Enter Stock Tickers to Add Them to Your Watchlist
+				</legend>
+				{% for value, text in form.stocks.field.choices %}
+                    <div class="ui slider checkbox">
+                        <input id="id_providers_{{ forloop.counter0 }}" type="checkbox" {% if value in stocks %} checked="checked"{% endif %}>
+                        <label>{{ text }}</label>
+                    </div>
+                {% endfor %}
+				<div class="form-group">
+					<button class = "btn btn-outline-info" type ="submit">Add</button>
+                    <a href="{% url 'user-stock-dashboard' user.username %}" class = "btn btn-outline-warning" type ="submit">Cancel</a>
+				</div>				
+        </form>
+	</div>
+{% endblock content %}

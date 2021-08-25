@@ -72,7 +72,7 @@
 </style>
     {% for index in stocks %}
     <div class="container">
-            <h5> {{index}} </h5>
+            <h5>{{index}} </h5>
             <table style="border: 1px solid #d3d3d3;">
                 <tr>
                 {% for stock in stocks|get_item:index %}
@@ -83,7 +83,8 @@
                             </button>
                             <div id = "{{ stock }}-{{ index }}" class="dropdown-content">
                                 <a href="{% url 'stock-price' stock %}"> Live Data </a>
-                                <a href="{% url 'history-price' stock interval %}"> Historical Prices </a>                            
+                                <a href="{% url 'history-price' stock interval %}"> Historical Prices </a>
+                                <a href="{% url 'user-add-stock' user.username stock %}"> Track This Stock </a>                                                     
                             </div>
                         </div> 
                     </td>                   

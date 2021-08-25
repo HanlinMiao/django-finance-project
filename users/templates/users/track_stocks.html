@@ -1,0 +1,38 @@
+{% extends "strategies/base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+<div>
+    {% if not stocks %}
+        <h5>No Stocks On Your Watchlist Yet. Dear {{user.username}}.</h5>
+        <br>
+        <br>
+    {% else %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+        {% for stock in stocks %}
+            <h5>{{ stock }}</h5>
+        {% endfor %}
+    {% endif %}
+
+    <table id=myTable>
+        {% if user.is_authenticated %}
+        <tr>
+            <td>
+                <a href="{% url 'index' %}" class="btn btn-outline-warning pull-left" style="width:100%">
+                    Add More Stocks to Your Watchlist&nbsp;&nbsp;<i class="fa fa-file-code-o" aria-hidden="true"></i>
+                </a>
+            </td>
+            <td>
+                <a href="#" class="btn btn-outline-info pull-left" style="width:100%">
+                    Edit Your Stock Watchlist&nbsp;&nbsp;<i class="fa fa-file-excel-o" aria-hidden="true"></i>
+                </i>
+                </a>
+            </td>
+        </tr>
+        {% endif %}
+    </table>
+</div>
+{% endblock content %}
