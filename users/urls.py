@@ -5,6 +5,7 @@ from .views import (
     profile,
     user_stock_dashboard,
     add_stock_to_watchlist,
+    remove_stock_from_watchlist,
 )
 
 urlpatterns = [
@@ -25,5 +26,6 @@ urlpatterns = [
          auth_views.PasswordResetCompleteView.as_view(template_name = 'users/password_reset_complete.html'), 
          name ='password_reset_complete'),
      path('<str:username>/user-stock-dashboard/', user_stock_dashboard, name='user-stock-dashboard'),
-     path('<str:username>/<str:stock>/add-stock', add_stock_to_watchlist, name='user-add-stock')
+     path('<str:username>/<str:stock>/add-stock', add_stock_to_watchlist, name='user-add-stock'),
+     path('<str:username>/<str:stock>/remove-stock', remove_stock_from_watchlist, name='user-remove-stock')
 ]

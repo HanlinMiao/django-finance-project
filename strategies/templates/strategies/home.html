@@ -27,7 +27,7 @@
 <style>
     /* Dropdown Button */
     .dropbtn {
-        background-color: #3498DB;
+        background-color: #85bb65;
         color: white;
         padding: 16px;
         font-size: 16px;
@@ -37,7 +37,7 @@
 
     /* Dropdown button on hover & focus */
     .dropbtn:hover, .dropbtn:focus {
-        background-color: #2980B9;
+        background-color: #4F8042;
     }
 
     /* The container <div> - needed to position the dropdown content */
@@ -84,7 +84,9 @@
                             <div id = "{{ stock }}-{{ index }}" class="dropdown-content">
                                 <a href="{% url 'stock-price' stock %}"> Live Data </a>
                                 <a href="{% url 'history-price' stock interval %}"> Historical Prices </a>
-                                <a href="{% url 'user-add-stock' user.username stock %}"> Track This Stock </a>                                                     
+                                {% if user.is_authenticated %}
+                                    <a href="{% url 'user-add-stock' user.username stock %}"> Track This Stock </a>
+                                {% endif %}                                               
                             </div>
                         </div> 
                     </td>                   

@@ -13,7 +13,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
         {% for stock in stocks %}
-            <h5>{{ stock }}</h5>
+        <div class="project-info-box mt-0" style="background-color:#DCDCDC; border-radius:15px;">
+            <span><a class="btn btn-outline-info" href="{% url 'stock-price' stock %}">{{ stock }}</a></span> <a href="{% url 'user-remove-stock' user.username stock %}" class="btn btn-outline-danger pull-right"><i class="fa fa-trash" aria-hidden="true"></i></a>
+        </div>
+        <br>
         {% endfor %}
     {% endif %}
 
