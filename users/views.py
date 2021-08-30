@@ -48,6 +48,7 @@ def user_stock_dashboard(request, username):
 	context = {
 		"user": user,
 		"stocks": sorted(stocks),
+		"interval": "yearly"
 	}
 
 	return render(request, 'users/track_stocks.html', context)

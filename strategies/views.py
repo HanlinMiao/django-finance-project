@@ -200,12 +200,12 @@ def index(request):
 
 def search_stock(request):
     if request.GET.get('q', False):
-        try:
-            stock = request.GET.get('q', False)
-            return redirect('stock-price', stock)
-        except AssertionError:
-            messages.warning(f'{stock} data not available at this moment')
+        stock = request.GET.get('q', False)
+        if live_view(request, stock) == "No Data Available":
+            messages.info(request, f'{stock} data not available at this moment')
             return redirect('search-stock')
+        else:
+            return redirect('stock-price', stock)
 
     strategies = get_all_strategies()
     return render(request, "strategies/search_stock.html", {"strategies": strategies})
@@ -213,9 +213,10 @@ def search_stock(request):
 def live_view(request, stock):
     strategies = get_all_strategies()
     data = yf.download(tickers=stock, period="1d", interval="1m")
+    if data.empty:
+        return "No Data Available"
     dps = data['Adj Close']
     dic = []
-    print(dps)
     for index, value in dps.items():
         dic.append(value)
     return render(request, "strategies/live_prices.html", {"strategies": strategies, "stock": stock, "dps": dic})
@@ -259,4 +260,5 @@ def get_historical_price(request, stock, interval):
     response_data = {}
     response_data['labels'] = labels
     response_data['data'] = list(data.dropna().adjclose)
+    print(stock)
     return JsonResponse(response_data)

@@ -2,22 +2,79 @@
 {% load crispy_forms_tags %}
 {% load static %}
 {% block content %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+
 <div>
     {% if not stocks %}
         <h5>No Stocks On Your Watchlist Yet. Dear {{user.username}}.</h5>
         <br>
         <br>
     {% else %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+    <div id="stock-list" value="{{stocks}}"></div>
         {% for stock in stocks %}
-        <div class="project-info-box mt-0" style="background-color:#DCDCDC; border-radius:15px;">
-            <span><a class="btn btn-outline-info" href="{% url 'stock-price' stock %}">{{ stock }}</a></span> <a href="{% url 'user-remove-stock' user.username stock %}" class="btn btn-outline-danger pull-right"><i class="fa fa-trash" aria-hidden="true"></i></a>
+        <div class="project-info-box mt-5" style="background-color:#DCDCDC; border-radius:15px;">
+            <a class="btn btn-outline-info pull-left" style="width: 85px; font-size: 14px;" href="{% url 'stock-price' stock %}">{{ stock }}</a>
+            <a href="{% url 'user-remove-stock' user.username stock %}" class="btn btn-outline-danger pull-right"><i class="fa fa-trash" aria-hidden="true"></i></a>
+            <div id="container" style="width: 100%;">
+                <canvas id="line-chart-{{stock}}" data-url="{% url 'get-historical-prices' stock interval %}"></canvas>
+            </div>
         </div>
         <br>
         {% endfor %}
+        <script>
+            window.onload = function() {
+                {% for stock in stocks %}
+                    var url = "{% url 'get-historical-prices' stock interval %}";
+                    console.log(url)
+                    $.ajax({
+                        url: url,
+                        success: function (data) {
+                            var id = 'line-chart-{{stock}}';
+                            var ctx = document.getElementById(id).getContext('2d');
+                            window.myLine = new Chart(ctx, {
+                                type: 'line',
+                                data: {
+                                    labels: data.labels,
+                                    datasets: [{
+                                        label: 'Historical Price Chart'.concat(" for ",  "{{ stock }} ({{interval}})"),
+                                        data: data.data,
+                                        backgroundColor: [
+                                            'rgba(0,100,0, 0.5)',
+                                            'rgba(54, 162, 235, 0.2)',
+                                            'rgba(255, 206, 86, 0.2)',
+                                            'rgba(75, 192, 192, 0.2)',
+                                            'rgba(153, 102, 255, 0.2)',
+                                            'rgba(255, 159, 64, 0.2)'
+                                        ],
+                                        borderColor: [
+                                            'rgba(0,100,0, 0.7)',
+                                            'rgba(54, 162, 235, 1)',
+                                            'rgba(255, 206, 86, 1)',
+                                            'rgba(75, 192, 192, 1)',
+                                            'rgba(153, 102, 255, 1)',
+                                            'rgba(255, 159, 64, 1)'
+                                        ],
+                                        borderWidth: 2
+                                    }]
+                                },
+                                options: {
+                                    scales: {
+                                        yAxes: [{
+                                            ticks: {
+                                                min: 0
+                                            }
+                                        }]
+                                    }
+                                }
+                            });
+                        }
+                    })
+                {% endfor %}
+            }
+        </script>
     {% endif %}
 
     <table id=myTable>
@@ -26,12 +83,6 @@
             <td>
                 <a href="{% url 'index' %}" class="btn btn-outline-warning pull-left" style="width:100%">
                     Add More Stocks to Your Watchlist&nbsp;&nbsp;<i class="fa fa-file-code-o" aria-hidden="true"></i>
-                </a>
-            </td>
-            <td>
-                <a href="#" class="btn btn-outline-info pull-left" style="width:100%">
-                    Edit Your Stock Watchlist&nbsp;&nbsp;<i class="fa fa-file-excel-o" aria-hidden="true"></i>
-                </i>
                 </a>
             </td>
         </tr>
