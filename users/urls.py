@@ -6,6 +6,8 @@ from .views import (
     user_stock_dashboard,
     add_stock_to_watchlist,
     remove_stock_from_watchlist,
+    user_investing_dashboard,
+    buy_stock,
 )
 
 urlpatterns = [
@@ -27,5 +29,7 @@ urlpatterns = [
          name ='password_reset_complete'),
      path('<str:username>/user-stock-dashboard/', user_stock_dashboard, name='user-stock-dashboard'),
      path('<str:username>/<str:stock>/add-stock', add_stock_to_watchlist, name='user-add-stock'),
-     path('<str:username>/<str:stock>/remove-stock', remove_stock_from_watchlist, name='user-remove-stock')
+     path('<str:username>/<str:stock>/remove-stock', remove_stock_from_watchlist, name='user-remove-stock'),
+     path('<str:username>/user-investing-dashboard/', user_investing_dashboard, name='user-investing-dashboard'),
+     path('<str:username>/<str:stock>/buy-stock/', buy_stock, name='user-buy-stock'),
 ]

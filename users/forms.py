@@ -23,10 +23,3 @@ class ProfileUpdateForm(forms.ModelForm):
 	class Meta:
 		model = Profile
 		fields = ['image']
-
-class StockUpdateForm(forms.ModelForm):
-	stocks = forms.MultipleChoiceField(choices=choices)
-	
-	class Meta:
-		model = Profile
-		fields = ['stocks']

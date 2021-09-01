@@ -12,10 +12,7 @@
         margin: -76px 0 0 -76px;
         border: 16px solid #f3f3f3;
         border-radius: 50%;
-        border-top: 16px solid blue;
-        border-right: 16px solid green;
-        border-bottom: 16px solid red;
-        border-left: 16px solid yellow;
+        border-top: 16px solid rgb(69, 69, 158);
         -webkit-animation: spin 2s linear infinite;
         animation: spin 2s linear infinite;
     }
@@ -55,23 +52,28 @@
     #myDiv {
         border-radius: 10px;
         position: absolute;
-        left: 10%;
-        top: 40%;
         display: none;
         text-align: left;
-        width: 50%
+        width: 100%
     }
     #result{
         display: none;
+    }
+    #mytable{
+        position: relative;
     }
 </style>
 <div>
     <div id="loader"></div>
     <div style="display:none;" id="myDiv" class="animate-bottom">
-        <h6 style = "color:black; "id="status"></h6>
-        <p style = "color:black;" id="output"></p>
+        <div class="project-info-box">
+            <p class="mb-0" id="status"></p>
+            <pre style="max-height: 150px; overflow: scroll;"><code class="python" id="output"></code></pre>
+        </div>
+        <!-- <h6 style = "color:black; "id="status"></h6>
+        <p style = "color:black;" id="output"></p> -->
     </div>
-    <table id=myTable>
+    <table id=myTable class="pull-left">
         {% if user.is_authenticated %}
         <tr>
             <td>

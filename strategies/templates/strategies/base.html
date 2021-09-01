@@ -49,7 +49,7 @@
                 </a>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                   <a class="dropdown-item" href="{% url 'user-stock-dashboard' user.username %}">Your Stock Watchlist&nbsp;&nbsp;<i class="fa fa-list"></i></a>
-                  <a class="dropdown-item" href="{% url 'strategy-create' %}">Add Stocks to Your Portfolio&nbsp;&nbsp;<i class="fa fa-plus" aria-hidden="true"></i></a>
+                  <a class="dropdown-item" href="{% url 'user-investing-dashboard' user.username %}">Your Investings&nbsp;&nbsp;<i class="fa fa-credit-card" aria-hidden="true"></i>                  </a>
                   <a class="dropdown-item" href="{% url 'search-stock' %}">Search For A Stock&nbsp;&nbsp;<i class="fa fa-search" aria-hidden="true"></i></a>
                 </div>
               </div>
@@ -96,6 +96,7 @@
               {% if user.is_authenticated %}
                 <a class="nav-item nav-link" href="{% url 'profile' %}">Profile&nbsp;&nbsp;<i class="fa fa-address-book"></i></a>
                 <a class="nav-item nav-link" href="{% url 'user-stock-dashboard' user.username %}">Watchlist&nbsp;&nbsp;<i class="fa fa-list" aria-hidden="true"></i></a>
+                <a class="nav-item nav-link" href="{% url 'user-investing-dashboard' user.username %}">Portfolio&nbsp;&nbsp;<i class="fa fa-credit-card" aria-hidden="true"></i></a>
                 <a class="nav-item nav-link" href="{% url 'logout' %}">Logout&nbsp;&nbsp;<i class="fa fa-sign-out"></i></a>
               {% else %}
                 <a class="nav-item nav-link" href="{% url 'login' %}">Login&nbsp;&nbsp;<i class="fa fa-sign-in"></i></a>

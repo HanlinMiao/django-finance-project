@@ -27,7 +27,7 @@ def main(argv):
             print ('quantitative_momentum.py -c <csv_file> -p <portfolio_size> -t <trade_id>')
             sys.exit()
         elif opt in ("-c", "--csv"):
-            ticker_file = arg
+            ticker_file = "media/" + arg
         elif opt in ("-p", "--portfolio"):
             portfolio_size = float(arg)
         elif opt in ("-t", "--trade_id"):

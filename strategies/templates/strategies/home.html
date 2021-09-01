@@ -81,6 +81,7 @@
                                 <a href="{% url 'history-price' stock interval %}"> Historical Prices </a>
                                 {% if user.is_authenticated %}
                                     <a href="{% url 'user-add-stock' user.username stock %}"> Track This Stock </a>
+                                    <a href="{% url 'user-buy-stock' user.username stock %}"> Buy This Stock </a>
                                 {% endif %}                                               
                             </div>
                         </div> 

@@ -25,7 +25,7 @@ def main(argv):
             print ('test_script.py -c <csv_file> -p <portfolio_size> -t <trade_id>')
             sys.exit()
         elif opt in ("-c", "--csv"):
-            ticker_file = arg
+            ticker_file = ticker_file = "media/" + arg
         elif opt in ("-p", "--portfolio"):
             portfolio_size = float(arg)
         elif opt in ("-t", "--trade_id"):

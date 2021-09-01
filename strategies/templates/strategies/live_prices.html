@@ -134,6 +134,11 @@
                 Add Stock&nbsp;&nbsp;<i class="fa fa-plus" aria-hidden="true"></i>
             </a>
         </td>
+        <td>
+            <a href="{% url 'user-buy-stock' user.username stock %}" class="btn btn-outline-success" style="width:80%">
+                Buy Stock&nbsp;&nbsp;<i class="fa fa-credit-card" aria-hidden="true"></i>
+            </a>
+        </td>
         {% endif %}
     </tr>
 </table>

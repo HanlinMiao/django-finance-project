@@ -2,8 +2,9 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm, StockUpdateForm
+from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 from .models import Profile, User
+from  yahoo_fin import stock_info as si
 
 
 def register(request):
@@ -45,11 +46,18 @@ def user_stock_dashboard(request, username):
 	user = User.objects.get(username=username)
 	profile = Profile.objects.get(user=user)
 	stocks = profile.get_stocks().split(",")
-	context = {
-		"user": user,
-		"stocks": sorted(stocks),
-		"interval": "yearly"
-	}
+	if stocks != ['']:
+		context = {
+			"user": user,
+			"stocks": sorted(stocks),
+			"interval": "yearly"
+		}
+	else:
+		context = {
+			"user": user,
+			"stocks": None,
+			"interval": "yearly"
+		}
 
 	return render(request, 'users/track_stocks.html', context)
 
@@ -60,11 +68,17 @@ def add_stock_to_watchlist(request, username, stock):
 	watch_list = profile.stocks.split(",")
 	if stock in watch_list:
 		messages.warning(request, f'{stock} is already in your watchlist')
-		return redirect('index')
+		return redirect('user-stock-dashboard', username)
 	else:
-		profile.stocks += ("," + stock)
-		profile.save()
-		watch_list.append(stock)
+		if watch_list == ['']:
+			profile.stocks = stock
+			watch_list.pop()
+			profile.save()
+			watch_list.append(stock)
+		else:
+			profile.stocks += ("," + stock)
+			profile.save()
+			watch_list.append(stock)
 		messages.success(request, f'{stock} has been added to your watchlist')
 	
 	context = {
@@ -94,7 +108,33 @@ def remove_stock_from_watchlist(request, username, stock):
 
 	return redirect('user-stock-dashboard', user)
 
-	
+@login_required
+def user_investing_dashboard(request, username):
+	user = User.objects.get(username=username)
+	profile = Profile.objects.get(user=user)
+	portfolio = profile.portfolio
+	stocks = sorted(list(portfolio.keys()))
+
+	return render(request, 'users/portfolio.html', {"portfolio": portfolio, "stocks": stocks, "interval": "yearly"})
+
+def buy_stock(request, username, stock):
+	if request.GET.get("share"):
+		share = int(request.GET.get("share"))
+		user = User.objects.get(username=username)
+		profile = Profile.objects.get(user=user)
+		portfolio = profile.portfolio
+		if stock in portfolio:
+			portfolio[stock] += share
+		else:
+			portfolio[stock] = share
+		profile.save()
+		messages.success(request, f'Congratulations {username}! You just bought {share} shares of {stock}.')
+
+		return redirect("user-investing-dashboard", username)
+	else:
+		price = '{:.2f}'.format(si.get_live_price(stock))
+		return render(request, 'users/buy_stock.html', {"stock": stock, "price": price})
+
 	
 
 

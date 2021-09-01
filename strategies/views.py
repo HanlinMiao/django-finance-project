@@ -143,12 +143,15 @@ def execute_trading_script(request, pk):
         command = ["python3", f"{script}", f"-c{csv_file}", f"-p{portfolio_size}", f"-t{trade_id}"] 
         try: 
             process = Popen(command, stdout=PIPE, stderr=STDOUT) 
-            output = process.stdout.read() 
+            output = process.stdout.read()
+            output = str(output).split("\\n")
+            print(output)
+            output = "\n".join(output)
             exitstatus = process.poll() 
             if (exitstatus==0): 
-                    result = {"status": "Success", "output":str(output)} 
+                    result = {"status": "Success", "output":output} 
             else: 
-                    result = {"status": "Failed", "output":str(output)} 
+                    result = {"status": "Failed", "output":output} 
 
         except Exception as e: 
             result =  {"status": "failed", "output":str(e)} 
