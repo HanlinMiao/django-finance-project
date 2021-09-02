@@ -127,6 +127,27 @@
 <table style="width: 100%">
     <tr>
         <td>
+            <a href="{% url 'stock-price' stock %}" class="btn btn-outline-success" style="width:80%">
+                Live Data&nbsp;&nbsp;<i class="fa fa-line-chart" aria-hidden="true"></i>
+            </a>
+        </td>
+    </tr>
+        {% if user.is_authenticated %}
+        <tr>
+            <td>
+                <a href="{% url 'user-add-stock' user.username stock %}" class="btn btn-outline-info" style="width:80%">
+                    Add Stock&nbsp;&nbsp;<i class="fa fa-plus" aria-hidden="true"></i>
+                </a>
+            </td>
+            <td>
+                <a href="{% url 'user-buy-stock' user.username stock %}" class="btn btn-outline-success" style="width:80%">
+                    Buy Stock&nbsp;&nbsp;<i class="fa fa-credit-card" aria-hidden="true"></i>
+                </a>
+            </td>
+        </tr>
+        {% endif %}
+    <tr>
+        <td>
             <a href="{% url 'history-price' stock 'daily' %}" class="btn btn-outline-warning" style="width:80%">
                 Daily&nbsp;&nbsp;<i class="fa fa-line-chart" aria-hidden="true"></i>
             </button>
@@ -149,25 +170,6 @@
             </i>
             </a>
         </td>
-    </tr>
-    <tr>
-        <td>
-            <a href="{% url 'stock-price' stock %}" class="btn btn-outline-success" style="width:80%">
-                Live Data&nbsp;&nbsp;<i class="fa fa-line-chart" aria-hidden="true"></i>
-            </a>
-        </td>
-        {% if user.is_authenticated %}
-        <td>
-            <a href="{% url 'user-add-stock' user.username stock %}" class="btn btn-outline-info" style="width:80%">
-                Add Stock&nbsp;&nbsp;<i class="fa fa-plus" aria-hidden="true"></i>
-            </a>
-        </td>
-        <td>
-            <a href="{% url 'user-buy-stock' user.username stock %}" class="btn btn-outline-success" style="width:80%">
-                Buy Stock&nbsp;&nbsp;<i class="fa fa-credit-card" aria-hidden="true"></i>
-            </a>
-        </td>
-        {% endif %}
     </tr>
 </table>
 {% endblock %}
