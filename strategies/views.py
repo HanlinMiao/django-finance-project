@@ -219,6 +219,7 @@ def live_view(request, stock):
     if data.empty:
         return "No Data Available"
     dps = data['Adj Close']
+    print(data)
     dic = []
     for index, value in dps.items():
         dic.append(value)
@@ -257,11 +258,23 @@ def get_historical_price(request, stock, interval):
     start_date = str((date.today() - timedelta(days=days)).strftime("%m/%d/%Y"))
     end_date = str(date.today().strftime("%m/%d/%Y"))
     data = si.get_data(stock, start_date=start_date, end_date=end_date, interval=interval)
-    
+    table = si.get_quote_table(stock)
+
     for time in data.dropna().index:
         labels.append(time.strftime("%m/%d/%Y"))
     response_data = {}
     response_data['labels'] = labels
     response_data['data'] = list(data.dropna().adjclose)
-    print(stock)
+    response_data['open'] = '{:.2f}'.format(float(data[-1:]['open']))
+    response_data['close'] = '{:.2f}'.format(float(data[-1:]['close']))
+    response_data['adjclose'] = '{:.2f}'.format(float(data[-1:]['adjclose']))
+    response_data['volume'] = int(data[-1:]['volume'])
+    response_data['marketcap'] = table['Market Cap']
+    response_data['avgvol'] = table['Avg. Volume']
+    range = table['52 Week Range']
+    response_data['high'] = range[range.index('-')+1:]
+    response_data['low'] = range[:range.index('-')]
+
+
+
     return JsonResponse(response_data)

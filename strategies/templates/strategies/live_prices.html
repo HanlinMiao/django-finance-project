@@ -24,8 +24,6 @@
             success:  function(response){
                 price = response.price
                 time = response.time
-                document.getElementById("price").value = price
-                document.getElementById("time").value = time
             }
         });
     };
@@ -103,7 +101,7 @@
     <tr>
         <td>
             <a href="{% url 'history-price' stock 'daily' %}" class="btn btn-outline-warning" style="width:80%">
-                Daily Prices&nbsp;&nbsp;<i class="fa fa-line-chart" aria-hidden="true"></i>
+                Daily&nbsp;&nbsp;<i class="fa fa-line-chart" aria-hidden="true"></i>
             </button>
         </td>
         <td>
@@ -125,7 +123,7 @@
     <tr>
         <td>
             <a href="{% url 'stock-price' stock %}" class="btn btn-outline-success" style="width:80%">
-                Live Prices&nbsp;&nbsp;<i class="fa fa-line-chart" aria-hidden="true"></i>
+                Live Data&nbsp;&nbsp;<i class="fa fa-line-chart" aria-hidden="true"></i>
             </a>
         </td>
         {% if user.is_authenticated %}

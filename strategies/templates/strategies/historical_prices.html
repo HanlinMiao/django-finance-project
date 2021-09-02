@@ -2,6 +2,26 @@
 {% load crispy_forms_tags %}
 {% load static %}
 {% block content %}
+<style>
+    .stats th{
+        padding: 10px;
+        border: 1px solid #d3d3d3;
+        border-collapse: collapse;
+    }
+    .stats td{
+        padding: 10px;
+        border: 1px solid #d3d3d3;
+        border-collapse: collapse;
+        width: 30%;
+    }
+    .stats tr:nth-child(even) {
+        background-color: #D6EEEE;
+    }
+    table{
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+</style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
@@ -16,6 +36,15 @@
                 $.ajax({
                     url: "{% url 'get-historical-prices' stock interval %}",
                     success: function (data) {
+                        document.getElementById('open').innerHTML = "$ " + data.open
+                        document.getElementById('close').innerHTML = "$ " + data.close
+                        document.getElementById('adjclose').innerHTML = "$ " + data.adjclose
+                        document.getElementById('volume').innerHTML = data.volume
+                        document.getElementById('marketcap').innerHTML = data.marketcap
+                        document.getElementById('high').innerHTML = "$ " + data.high
+                        document.getElementById('low').innerHTML = "$ " + data.low
+                        document.getElementById('avgvol').innerHTML = data.avgvol
+
                         var ctx = document.getElementById('line-chart').getContext('2d');
                         window.myLine = new Chart(ctx, {
                             type: 'line',
@@ -47,7 +76,8 @@
                                 scales: {
                                     yAxes: [{
                                         ticks: {
-                                            min: 0
+                                            min: Math.floor(Math.min(...data.data) - 5),
+                                            max: Math.floor(Math.max(...data.data) + 5)
                                         }
                                     }]
                                 }
@@ -60,11 +90,45 @@
         </div>
     </div>
 </div>
+<table class="stats" style="width:100%">
+    <tr>
+        <td>
+            <span><strong>Open</strong></span><span class="pull-right" id='open'></span>
+        </td>
+        <td>
+            <span><strong>Volume</strong></span><span class="pull-right" id='volume'></span>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <span><strong>52 Week High</strong></span><span class="pull-right" id='high'></span>
+        </td>
+        <td>
+            <span><strong>Avg Vol</strong></span><span class="pull-right" id='avgvol'></span>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <span><strong>52 Week Low</strong></span><span class="pull-right" id='low'></span>
+        </td>
+        <td>
+            <span><strong>Mkt Cap</strong></span><span class="pull-right" id='marketcap'></span>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <span><strong>Close</strong></span><span class="pull-right" id='close'></span>
+        </td>
+        <td>
+            <span><strong>Adj Close</strong></span><span class="pull-right" id='adjclose'></span>
+        </td>
+    </tr>
+</table>
 <table style="width: 100%">
     <tr>
         <td>
             <a href="{% url 'history-price' stock 'daily' %}" class="btn btn-outline-warning" style="width:80%">
-                Daily Prices&nbsp;&nbsp;<i class="fa fa-line-chart" aria-hidden="true"></i>
+                Daily&nbsp;&nbsp;<i class="fa fa-line-chart" aria-hidden="true"></i>
             </button>
         </td>
         <td>
@@ -89,7 +153,7 @@
     <tr>
         <td>
             <a href="{% url 'stock-price' stock %}" class="btn btn-outline-success" style="width:80%">
-                Live Prices&nbsp;&nbsp;<i class="fa fa-line-chart" aria-hidden="true"></i>
+                Live Data&nbsp;&nbsp;<i class="fa fa-line-chart" aria-hidden="true"></i>
             </a>
         </td>
         {% if user.is_authenticated %}
