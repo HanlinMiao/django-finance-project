@@ -1,0 +1,46 @@
+{% extends "strategies/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<style>
+    input[type=number], select {
+      width: 100%;
+      padding: 12px 20px;
+      margin: 8px 0;
+      display: inline-block;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    
+    input[type=submit] {
+      width: 100%;
+      background-color: #4CAF50;
+      color: white;
+      padding: 14px 20px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    
+    input[type=submit]:hover {
+      background-color: #45a049;
+    }
+</style>
+	<div class = "content-section">
+        <form action="{% url 'user-sell-stock' user.username stock %}" method="get">
+			{% csrf_token %}
+			<fieldset class = "form-group">
+				<legend class = "border-bottom mb-4">
+					How many shares of {{stock}} (${{ price }} Per Share) would you like to sell?
+				</legend>
+                    <input name="share" type="number" onkeypress="return event.charCode >= 48" min="1" placeholder="Enter number of shares">
+                <br>
+				<br>
+				<div class="form-group">
+					<button class = "btn btn-outline-info" type ="submit" value="Search">Sell</button>
+					<a href="{% url 'index' %}" class="btn btn-outline-warning">Cancel</a>
+				</div>				
+		</form>
+	</div>
+{% endblock content %}

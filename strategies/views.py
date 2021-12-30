@@ -145,7 +145,6 @@ def execute_trading_script(request, pk):
             process = Popen(command, stdout=PIPE, stderr=STDOUT) 
             output = process.stdout.read()
             output = str(output).split("\\n")
-            print(output)
             output = "\n".join(output)
             exitstatus = process.poll() 
             if (exitstatus==0): 
@@ -219,7 +218,6 @@ def live_view(request, stock):
     if data.empty:
         return "No Data Available"
     dps = data['Adj Close']
-    print(data)
     dic = []
     for index, value in dps.items():
         dic.append(value)
@@ -268,13 +266,17 @@ def get_historical_price(request, stock, interval):
     response_data['open'] = '{:.2f}'.format(float(data[-1:]['open']))
     response_data['close'] = '{:.2f}'.format(float(data[-1:]['close']))
     response_data['adjclose'] = '{:.2f}'.format(float(data[-1:]['adjclose']))
-    response_data['volume'] = int(data[-1:]['volume'])
+    try:
+        response_data['volume'] = int(data[-1:]['volume'])
+    except ValueError:
+        response_data['volume'] = "NaN"
+    
     response_data['marketcap'] = table['Market Cap']
     response_data['avgvol'] = table['Avg. Volume']
     range = table['52 Week Range']
     response_data['high'] = range[range.index('-')+1:]
     response_data['low'] = range[:range.index('-')]
-
-
+    response_data['dividend'] = table['Forward Dividend & Yield']
+    response_data['pe'] = str(table['PE Ratio (TTM)'])
 
     return JsonResponse(response_data)

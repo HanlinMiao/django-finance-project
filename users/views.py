@@ -135,7 +135,29 @@ def buy_stock(request, username, stock):
 		price = '{:.2f}'.format(si.get_live_price(stock))
 		return render(request, 'users/buy_stock.html', {"stock": stock, "price": price})
 
-	
+def sell_stock(request, username, stock):
+	if request.GET.get("share"):
+		share = int(request.GET.get("share"))
+		user = User.objects.get(username=username)
+		profile = Profile.objects.get(user=user)
+		portfolio = profile.portfolio
+		price = '{:.2f}'.format(si.get_live_price(stock))
+		total = share * float(price)
+		if stock in portfolio:
+			if share > portfolio[stock]:
+				messages.warning(request, f'You cannot sell more than your own')
+				return redirect("user-sell-stock", username, stock)
+			elif share == portfolio[stock]:
+				portfolio.pop(stock)
+			else:
+				portfolio[stock] -= share
+		profile.save()
+		messages.success(request, f'Congratulations {username}! You just sold {share} shares of {stock} for ${total}.')
+		return redirect("user-investing-dashboard", username)
+	else:
+		price = '{:.2f}'.format(si.get_live_price(stock))
+		return render(request, 'users/sell_stock.html', {"stock": stock, "price": price})
+
 
 
 """

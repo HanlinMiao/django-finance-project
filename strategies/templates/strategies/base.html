@@ -131,7 +131,16 @@
                       <div class="feature bg-primary bg-gradient text-white rounded-3 mb-4 mt-n4"><i class="bi bi-collection"></i></div>
                         <table>
                           <caption style="caption-side:top">Quick Access</caption>
+                          <tr><td>
+                            <a href="{% url 'search-stock' %}" class="btn btn-outline-success" style="width: 100%">Search for a Stock&nbsp;&nbsp;<i class="fa fa-search"></i></a>
+                          </td></tr>
                           {% if user.is_authenticated %}
+                          <tr><td>
+                            <a href="{% url 'user-stock-dashboard' user.username %}" class="btn btn-outline-success" style="width: 100%">Your Watchlist&nbsp;&nbsp;<i class="fa fa-list"></i></a>
+                          </td></tr>
+                          <tr><td>
+                            <a href="{% url 'user-investing-dashboard' user.username %}" class="btn btn-outline-success" style="width: 100%">Your Portfolio&nbsp;&nbsp;<i class="fa fa-credit-card"></i></a>
+                          </td></tr>
                           <tr><td>
                             <a href="{% url 'strategy-create' %}" class="btn btn-outline-success" style="width: 100%">New Strategy&nbsp;&nbsp;<i class="fa fa-lightbulb-o" aria-hidden="true"></i></a>
                           </td></tr>
@@ -140,16 +149,10 @@
                           </td></tr>
                           {% endif %}
                           <tr><td>
-                            <a href="{% url 'search-stock' %}" class="btn btn-outline-success" style="width: 100%">Search for a Stock&nbsp;&nbsp;<i class="fa fa-search"></i></a>
-                          </td></tr>
-                          <tr><td>
                             <a href="{% url 'strategy-list' %}" class="btn btn-outline-success" style="width: 100%">All Strategies&nbsp;&nbsp;<i class="fa fa-book"></i></a>
                           </td></tr>
                           <tr><td>
                             <a href="{% url 'trade-list' %}" class="btn btn-outline-success" style="width: 100%">All Trades&nbsp;&nbsp;<i class="fa fa-plane"></i></a>
-                          </td></tr>
-                          <tr><td>
-                            <a href="{% url 'index' %}" class="btn btn-outline-success" style="width: 100%">About the Author&nbsp;&nbsp;<i class="fa fa-user-secret"></i></a>
                           </td></tr>
                       </table>
                     </div>

@@ -7,12 +7,14 @@
         padding: 10px;
         border: 1px solid #d3d3d3;
         border-collapse: collapse;
+        font-size: 10px;
     }
     .stats td{
         padding: 10px;
         border: 1px solid #d3d3d3;
         border-collapse: collapse;
         width: 30%;
+        font-size: 10px;
     }
     .stats tr:nth-child(even) {
         background-color: #D6EEEE;
@@ -26,7 +28,34 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
-<h1>{% block title %} Historical Price for {{stock}} {% endblock %}</h1>
+<h5>{% block title %} Historical Price for {{stock}} {% endblock %}</h5>
+<table style="width:100%">
+    <tr>
+        <td>
+            <a href="{% url 'history-price' stock 'daily' %}" class="btn btn-outline-warning" style="width:80%">
+                Daily&nbsp;&nbsp;<i class="fa fa-area-chart" aria-hidden="true"></i>
+            </button>
+        </td>
+        <td>
+            <a href="{% url 'history-price' stock 'weekly' %}" class="btn btn-outline-info" style="width:80%">
+                Weekly&nbsp;&nbsp;<i class="fa fa-area-chart" aria-hidden="true"></i>
+            </i>
+            </a>
+        </td>
+        <td id="result">
+            <a href="{% url 'history-price' stock 'monthly' %}" class="btn btn-outline-success" style="width:80%" >
+                Monthly&nbsp;&nbsp;<i class="fa fa-area-chart" aria-hidden="true"></i>
+            </i>
+            </a>
+        </td>
+        <td >
+            <a href="{% url 'history-price' stock 'yearly' %}" class="btn btn-outline-danger" style="width:80%" >
+                Yearly&nbsp;&nbsp;<i class="fa fa-area-chart" aria-hidden="true"></i>
+            </i>
+            </a>
+        </td>
+    </tr>
+</table>
 <div class="row">
 	<div class="col-md-12">
         <div id="container" style="width: 100%;">
@@ -44,6 +73,8 @@
                         document.getElementById('high').innerHTML = "$ " + data.high
                         document.getElementById('low').innerHTML = "$ " + data.low
                         document.getElementById('avgvol').innerHTML = data.avgvol
+                        document.getElementById('pe').innerHTML = data.pe
+                        document.getElementById('dividend').innerHTML = data.dividend
 
                         var ctx = document.getElementById('line-chart').getContext('2d');
                         window.myLine = new Chart(ctx, {
@@ -92,6 +123,13 @@
 </div>
 <table class="stats" style="width:100%">
     <tr>
+        <th style="font-size:15px;">
+            Stats
+        </th>
+        <th>
+        </th>
+    </tr>
+    <tr>
         <td>
             <span><strong>Open</strong></span><span class="pull-right" id='open'></span>
         </td>
@@ -123,6 +161,14 @@
             <span><strong>Adj Close</strong></span><span class="pull-right" id='adjclose'></span>
         </td>
     </tr>
+    <tr>
+        <td>
+            <span><strong>P.E. Ratio</strong></span><span class="pull-right" id='pe'></span>
+        </td>
+        <td>
+            <span><strong>Div/Yield</strong></span><span class="pull-right" id='dividend'></span>
+        </td>
+    </tr>
 </table>
 <table style="width: 100%">
     <tr>
@@ -146,30 +192,5 @@
             </td>
         </tr>
         {% endif %}
-    <tr>
-        <td>
-            <a href="{% url 'history-price' stock 'daily' %}" class="btn btn-outline-warning" style="width:80%">
-                Daily&nbsp;&nbsp;<i class="fa fa-line-chart" aria-hidden="true"></i>
-            </button>
-        </td>
-        <td>
-            <a href="{% url 'history-price' stock 'weekly' %}" class="btn btn-outline-info" style="width:80%">
-                Weekly&nbsp;&nbsp;<i class="fa fa-line-chart" aria-hidden="true"></i>
-            </i>
-            </a>
-        </td>
-        <td id="result">
-            <a href="{% url 'history-price' stock 'monthly' %}" class="btn btn-outline-success" style="width:80%" >
-                Monthly&nbsp;&nbsp;<i class="fa fa-line-chart" aria-hidden="true"></i>
-            </i>
-            </a>
-        </td>
-        <td >
-            <a href="{% url 'history-price' stock 'yearly' %}" class="btn btn-outline-danger" style="width:80%" >
-                Yearly&nbsp;&nbsp;<i class="fa fa-line-chart" aria-hidden="true"></i>
-            </i>
-            </a>
-        </td>
-    </tr>
 </table>
 {% endblock %}

@@ -15,20 +15,106 @@
         <div id="stock-list" value="{{stocks}}"></div>
             {% for stock in stocks %}
             <div class="project-info-box mt-5" style="background-color:#DCDCDC; border-radius:15px;">
-                <a class="btn btn-outline-info pull-left" style="width: 85px; font-size: 14px;" href="{% url 'stock-price' stock %}">{{ stock }}</a>
-                <a href="{% url 'user-buy-stock' user.username stock %}" style="width: 85px; font-size: 14px;" class="btn btn-outline-success pull-right"><i class="fa fa-plus" aria-hidden="true"></i></a>
+                <table style="width:100%">
+                    <tr>
+                        <td>
+                            <button id="{{stock}}-daily" onClick="reply_click(this.id)"  class="btn btn-outline-warning" style="width:80%">
+                                Daily
+                            </button>
+                        </td>
+                        <td>
+                            <button id="{{stock}}-weekly" onClick="reply_click(this.id)" class="btn btn-outline-info" style="width:80%">
+                                Weekly
+                            </a>
+                        </td>
+                        <td>
+                            <button id="{{stock}}-monthly" onClick="reply_click(this.id)" class="btn btn-outline-success" style="width:80%" >
+                                Monthly
+                            </a>
+                        </td>
+                        <td >
+                            <button id="{{stock}}-yearly" onClick="reply_click(this.id)" class="btn btn-outline-danger" style="width:80%" >
+                                Yearly
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <a class="btn btn-outline-info pull-left" style="width:80%" href="{% url 'stock-price' stock %}">{{ stock }}</a>
+                        </td>
+                        <td>
+
+                        </td>
+                        <td>
+                            <a href="{% url 'user-sell-stock' user.username stock %}" style="width:80%" class="btn btn-outline-warning">Sell&nbsp;&nbsp;<i class="fa fa-credit-card" aria-hidden="true"></i></a>
+                        </td>
+                        <td>
+                            <a href="{% url 'user-buy-stock' user.username stock %}" style="width:80%" class="btn btn-outline-success">Buy&nbsp;&nbsp;<i class="fa fa-credit-card" aria-hidden="true"></i></a>
+                        </td>
+                    </tr>
+                </table>
                 <div id="container" style="width: 100%;">
                     <canvas id="line-chart-{{stock}}" data-url="{% url 'get-historical-prices' stock interval %}"></canvas>
                 </div>
-                <p style="font-size: 17px; color: lightskyblue;" class="">Number of Shares: <strong>{{portfolio|get_item:stock}}</strong></p>
+                <p style="font-size: 17px; color: lightskyblue;" class=""><strong>{{portfolio|get_item:stock}} Shares</strong></p>
             </div>
             <br>
             {% endfor %}
             <script>
+                function get_stock_data(stock, interval){
+                    var id = 'line-chart-';
+                    id = id.concat(stock)
+                    var url = document.getElementById(id).getAttribute("data-url")
+                    let last_space = url.lastIndexOf('/ajax-historical-price')
+                    let second_last_space = url.substring(0, last_space-1).lastIndexOf("/")
+                    var old_interval = url.substring(second_last_space+1, last_space)
+                    url = url.replace(old_interval, interval)
+                    $.ajax({
+                        url: url,
+                        success: function (data) {
+                            var ctx = document.getElementById(id).getContext('2d');
+                            window.myLine = new Chart(ctx, {
+                                type: 'line',
+                                data: {
+                                    labels: data.labels,
+                                    datasets: [{
+                                        label: 'Historical Price Chart'.concat(" for ",  stock).concat(" / ", interval),
+                                        data: data.data,
+                                        backgroundColor: [
+                                            'rgba(0,100,0, 0.2)',
+                                            'rgba(54, 162, 235, 0.2)',
+                                            'rgba(255, 206, 86, 0.2)',
+                                            'rgba(75, 192, 192, 0.2)',
+                                            'rgba(153, 102, 255, 0.2)',
+                                            'rgba(255, 159, 64, 0.2)'
+                                        ],
+                                        borderColor: [
+                                            'rgba(0,100,0, 0.8)',
+                                            'rgba(54, 162, 235, 1)',
+                                            'rgba(255, 206, 86, 1)',
+                                            'rgba(75, 192, 192, 1)',
+                                            'rgba(153, 102, 255, 1)',
+                                            'rgba(255, 159, 64, 1)'
+                                        ],
+                                        borderWidth: 2
+                                    }]
+                                },
+                                options: {
+                                    scales: {
+                                        yAxes: [{
+                                            ticks: {
+                                                min: 0
+                                            }
+                                        }]
+                                    }
+                                }
+                            });
+                        }
+                    })
+                }
                 window.onload = function() {
                     {% for stock in stocks %}
-                        var url = "{% url 'get-historical-prices' stock interval %}";
-                        console.log(url)
+                        var url = "{% url 'get-historical-prices' stock interval %}"
                         $.ajax({
                             url: url,
                             success: function (data) {
@@ -39,7 +125,7 @@
                                     data: {
                                         labels: data.labels,
                                         datasets: [{
-                                            label: 'Historical Price Chart'.concat(" for ",  "{{ stock }} ({{interval}})"),
+                                            label: 'Historical Price Chart'.concat(" for ",  "{{stock}} / {{interval}}"),
                                             data: data.data,
                                             backgroundColor: [
                                                 'rgba(0,100,0, 0.2)',
@@ -74,6 +160,10 @@
                         })
                     {% endfor %}
                 }
+                function reply_click(id) {   
+                    array = id.split("-")                 
+                    get_stock_data(array[0], array[1]);
+                }
             </script>
     {% endif %}
 
@@ -82,7 +172,7 @@
         <tr>
             <td>
                 <a href="{% url 'index' %}" class="btn btn-outline-success pull-left" style="width:100%">
-                    Buy More Stocks&nbsp;&nbsp;<i class="fa fa-credit-card" aria-hidden="true"></i>
+                    Homepage&nbsp;&nbsp;<i class="fa fa-credit-card" aria-hidden="true"></i>
                 </a>
             </td>
         </tr>
